@@ -3,7 +3,7 @@ import supabase from '../../server/supabase';
 import styled from 'styled-components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import Task from './Task';
+import Task from './TaskEntry';
 import { getTasks } from '../../server/apiTasks';
 import { MdAddTask } from 'react-icons/md';
 import { CircularProgress } from '@mui/material';
@@ -12,22 +12,22 @@ const StyledTaskPane = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #ebe7e7;
-  width: 96%;
-  height: 94.5%;
-  grid-column: 2 / span 3;
-  grid-row: 2 / span 1;
+  max-width: 94.7%;
+  max-height: 99%;
+  grid-column: 2 / span 5;
+  grid-row: 3 / span 1;
   filter: drop-shadow(4px 4px 3px rgb(0, 0, 0, 0.25));
   border-radius: var(--border-radius-primary);
   border: 1px inset rgb(124, 123, 123);
-
   padding: 0.75rem 1rem 0.2rem 1rem;
-  overflow: scroll;
+  overflow: auto;
+  resize: vertical;
 `;
 
 const StyledTaskPaneHeader = styled.div`
   display: grid;
-  grid-template-rows: 1%.5;
-  grid-template-columns: 3.5rem 26rem 14.5rem 6.5rem 26.5% 5rem;
+  grid-template-rows: 2rem;
+  grid-template-columns: 2.6rem 25.5rem 13.25rem 6.7rem 26.1% 5rem 0rem;
   column-gap: 0.5rem;
   /* height: 1.25rem; */
   /* align-content: start; */
@@ -102,9 +102,14 @@ const Break = styled.div`
   margin: 0.25rem 0 0.5rem 0;
 `;
 
+const StyledTaskListDiv = styled.div`
+  overflow: scroll;
+`;
+
 // eslint-disable-next-line react/prop-types
 function TaskPane({ handleModal }) {
   const { modalToggle, setModalToggle } = handleModal;
+
   const [data, setData] = useState(true);
   const queryClient = useQueryClient();
 
@@ -117,7 +122,7 @@ function TaskPane({ handleModal }) {
     queryFn: getTasks,
   });
 
-  console.log(tasks);
+  // console.log(tasks);
   function handleClick() {
     setModalToggle(!modalToggle);
   }
@@ -159,11 +164,11 @@ function TaskPane({ handleModal }) {
       {isLoading ? (
         <StyledSpinner color="inherit" />
       ) : (
-        <div style={{ overflow: 'scroll' }}>
+        <StyledTaskListDiv>
           {tasks.map((task) => {
-            return <Task props={task} key={task.id} />;
+            return <Task taskProps={task} key={task.id} />;
           })}
-        </div>
+        </StyledTaskListDiv>
       )}
     </StyledTaskPane>
   );

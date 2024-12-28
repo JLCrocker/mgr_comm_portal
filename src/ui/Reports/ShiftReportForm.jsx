@@ -12,10 +12,10 @@ import {
 } from '@mui/material';
 import Select from '@mui/material/Select';
 
-import { getCategories, submitReport } from '../server/apiReports';
+import { /* getCategories */ submitReport } from '../../server/apiReports';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getUsers } from '../server/apiUsers';
+import { getUsers } from '../../server/apiUsers';
 // import { submitReport } from '../../server/apiReports';
 
 const StyledModal = styled.div`
@@ -109,32 +109,45 @@ function ReportEntry({ handleModal }) {
   function clearForm() {
     setReport('');
     setUser('');
-    setCategory('');
+    setCategory(' ');
   }
 
-  const {
-    isLoading,
-    data: categories,
-    error,
-  } = useQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories,
-  });
+  const categories = [
+    'bookkeeping',
+    'attendance',
+    'customers',
+    'training',
+    'operations',
+    'other',
+  ];
+  // const {
+  //   isLoading,
+  //   data: categories,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ['categories'],
+  //   queryFn: getCategories,
+  // });
 
   const {
     isLoading: usersLoading,
     data: users,
-    error: usersError,
+    // error: usersError,
   } = useQuery({
     queryKey: ['users'],
     queryFn: getUsers,
   });
 
-  if (usersLoading) return console.log('users loading...');
-  if (usersError) return console.error(error);
+  // if (usersLoading) return console.log('users loading...');
+  // if (usersError) return console.error(usersError);
 
   const handleSelectCategory = (event) => {
-    setCategory(event.target.value);
+    setCategory(event.target.value.toLowerCase());
+
+    //The next 3 lines are for debuggin purposes
+    const categoryInput = event.target.value;
+    const categorySelection = categoryInput.toLowerCase();
+    console.log(categorySelection);
   };
 
   function findAndSetUser(user) {
@@ -146,10 +159,6 @@ function ReportEntry({ handleModal }) {
   const handleSelectUser = (event) => {
     setUser(event.target.value);
     findAndSetUser(event.target.value);
-    // const selectedUserId = users.find((el) => {
-    //   if (el.first_name === user) return el;
-    // });
-    // setUserId(selectedUser.user_id);
   };
 
   function handleSubmitForm(e) {
@@ -163,8 +172,8 @@ function ReportEntry({ handleModal }) {
     closeModal();
   }
 
-  if (error) console.error(error);
-  if (isLoading) console.log('loading...');
+  // if (error) console.error(error);
+  // if (isLoading) console.log('loading...');
 
   return (
     <StyledModal
@@ -178,16 +187,19 @@ function ReportEntry({ handleModal }) {
         <form onSubmit={handleSubmitForm}>
           <Box sx={{ minWidth: 600 }}>
             <FormControl sx={{ m: 1, minWidth: 280 }}>
-              <InputLabel id="user-selector-label">User</InputLabel>
+              <InputLabel id="user-selector-label" color="secondary">
+                User
+              </InputLabel>
               <Select
                 required
                 labelId="user-selector-label"
                 id="user-simple-select"
+                color="secondary"
                 value={user}
                 label="User"
                 onChange={handleSelectUser}>
                 {/* <MenuItem value={10}>Ten</MenuItem> */}
-                {isLoading
+                {usersLoading
                   ? 'Loading'
                   : users.map((el) => (
                       <MenuItem key={el.user_id} value={el.first_name}>
@@ -197,26 +209,26 @@ function ReportEntry({ handleModal }) {
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 280 }}>
-              <InputLabel id="category-selector-label">Category</InputLabel>
+              <InputLabel id="category-selector-label" color="secondary">
+                Category
+              </InputLabel>
               <Select
+                required
                 labelId="category-selector-label"
                 id="demo-simple-select"
                 value={category}
                 label="Category"
                 margin="none"
+                color="secondary"
                 onChange={handleSelectCategory}>
                 {/* <MenuItem value={10}>Ten</MenuItem> */}
-                {isLoading
-                  ? 'Loading'
-                  : categories.map((el) => (
-                      <MenuItem key={el.id} value={el.category}>
-                        {el.category}
-                      </MenuItem>
-                    ))}
+                {categories.map((el) => (
+                  <MenuItem key={el} value={el}>
+                    {String(el).charAt(0).toUpperCase() + String(el).slice(1)}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
-            {/* </Box>
-            <Box sx={{ minWidth: 600 }}> */}
           </Box>
           <FormControl sx={{ m: 0, minWidth: 590 }}>
             <Box>
@@ -239,7 +251,7 @@ function ReportEntry({ handleModal }) {
           <div style={{ margin: '0.5rem', justifySelf: 'end' }}>
             <Button
               type="submit"
-              color="inherit"
+              color="secondary"
               variant="outlined"
               size="medium">
               Submit
