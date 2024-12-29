@@ -17,6 +17,7 @@ import styled from 'styled-components';
 // import { CircularProgress } from '@mui/material';
 import ShiftReports from './ShiftReports.jsx';
 import ILogReports from '../ILogs/ILogReportsPane.jsx';
+import MetricsReport from '../Metrics/MetricsReport.jsx';
 
 // eslint-disable-next-line no-unused-vars
 
@@ -43,6 +44,7 @@ function ReportPane({ dateValue, handleModal, viewSelector }) {
           <ShiftReports dateValue={dateValue} handleModal={handleModal} />
         )}
         {viewSelector === 'ILs' && <ILogReports />}
+        {viewSelector === 'SlMetrics' && <MetricsReport />}
       </StyledDiv>
     </>
   );

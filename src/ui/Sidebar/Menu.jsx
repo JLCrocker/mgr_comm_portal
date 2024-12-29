@@ -247,7 +247,7 @@ function ReportsMenu({ handleView }) {
     <StyledReportsMenuDiv>
       <ul>
         <li onClick={() => handleView('ILs')}>ILs</li>
-        <li>SL Metrics</li>
+        <li onClick={() => handleView('SlMetrics')}>SL Metrics</li>
         <li>Training</li>
       </ul>
     </StyledReportsMenuDiv>
